@@ -43,8 +43,8 @@ app.set('view options', {
 });
 
 // serve pure static assets
-var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-app.use(staticPath, express.static('./static'))
+var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
+app.use(staticPath, express.static('./static/dist'));
 
 app.get('/', function (req, res){
     let assign = entryAssets(res, 'index');
@@ -67,5 +67,5 @@ function entryAssets(res, entry){
     chunks.styles = assets.filter(path=>{
         return path.endsWith('.css')
     });
-    return {chunks, publicPath: webpackConfigDev.output.publicPath };
+    return {chunks, publicPath: staticPath };
 };

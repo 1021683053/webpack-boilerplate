@@ -11,9 +11,12 @@ function resolve(dir) {
 }
 
 var entrys = {};
-glob.sync(resolve('src/entrys/*.js')).forEach(file=>{
+glob.sync(resolve('static/src/enters/*.js')).forEach(file=>{
     entrys[path.basename(file, '.js')] = file;
 });
+
+
+
 
 module.exports = {
     entry: entrys,
@@ -27,21 +30,18 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.json'],
         alias: {
-            '@': resolve('src')
+            '@': resolve('static/src')
         }
     },
     module: {
         rules:[
         {
             test: /\.less$/,
-            use: ExtractTextPlugin.extract({
-                fallback: 'style-loader?sourceMap=true',
-                use: ['css-loader?sourceMap=true', 'postcss-loader?sourceMap=true', 'less-loader?sourceMap=true']
-            })
+            use: ['style-loader?sourceMap=true', 'css-loader?sourceMap=true', 'postcss-loader?sourceMap=true', 'less-loader?sourceMap=true']
         }, {
             test: /\.js$/,
             loader: 'babel-loader',
-            include: [resolve('src'), resolve('test')]
+            include: [resolve('static/src')]
         }, {
             test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
             loader: 'url-loader',
