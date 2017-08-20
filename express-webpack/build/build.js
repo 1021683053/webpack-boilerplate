@@ -2,6 +2,7 @@ require('./check-versions')()
 
 process.env.NODE_ENV = 'production'
 
+var fs = require('fs');
 var ora = require('ora')
 var rm = require('rimraf')
 var path = require('path')
@@ -18,6 +19,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     webpack(webpackConfig, function (err, stats) {
         spinner.stop()
         if (err) throw err
+
         process.stdout.write(stats.toString({
             colors: true,
             modules: false,
@@ -25,7 +27,8 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
             chunks: false,
             chunkModules: false
         }) + '\n\n')
-
+        var err = fs.writeFileSync(__dirname+'/stats.json', JSON.stringify(stats.toJson()) );
+        console.log(err);
         console.log(chalk.cyan('  Build complete.\n'))
         console.log(chalk.yellow(
             '  Tip: built files are meant to be served over an HTTP server.\n' +

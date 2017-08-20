@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Webpack Express Dev</title>
-    {{if chunks.styles && chunks.styles.length>0}}
-        {{each chunks.styles}}
-    <link rel="stylesheet" href="{{publicPath}}{{@ $value}}" />
+    {{if chunk.style && chunk.style.length>0}}
+        {{each chunk.style}}
+    {{@ $value}}
         {{/each}}
     {{/if}}
 </head>
 <body>
     <h2>Webpack Express Dev!</h2>
-    {{if chunks.scripts && chunks.scripts.length>0}}
-        {{each chunks.scripts}}
-    <script src="{{publicPath}}{{@ $value}}"></script>
+    {{if chunk.script && chunk.script.length>0}}
+        {{each chunk.script}}
+    {{@ $value}}
         {{/each}}
     {{/if}}
 </body>

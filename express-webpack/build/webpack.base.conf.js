@@ -36,9 +36,6 @@ module.exports = {
     module: {
         rules:[
         {
-            test: /\.less$/,
-            use: ['style-loader?sourceMap=true', 'css-loader?sourceMap=true', 'postcss-loader?sourceMap=true', 'less-loader?sourceMap=true']
-        }, {
             test: /\.js$/,
             loader: 'babel-loader',
             include: [resolve('static/src')]

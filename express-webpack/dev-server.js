@@ -46,26 +46,12 @@ app.set('view options', {
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
 app.use(staticPath, express.static('./static/dist'));
 
+app.use(require('./app/mix')(staticPath));
+
 app.get('/', function (req, res){
-    let assign = entryAssets(res, 'index');
-    res.render('index', Object.assign({}, assign));
+    var assets = res.mix().chunk('index').string();
+    console.log(assets);
+    res.render('index', {chunk: assets});
 });
 
 app.listen(3000);
-
-// Function
-function normalizeAssets(assets) {
-    return Array.isArray(assets) ? assets : [assets]
-};
-
-function entryAssets(res, entry){
-    let assets = normalizeAssets(res.locals.webpackStats.toJson().assetsByChunkName[entry]);
-    let chunks ={};
-    chunks.scripts = assets.filter(path=>{
-        return path.endsWith('.js')
-    });
-    chunks.styles = assets.filter(path=>{
-        return path.endsWith('.css')
-    });
-    return {chunks, publicPath: staticPath };
-};
