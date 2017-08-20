@@ -1,4 +1,5 @@
-process.env.NODE_ENV = 'dev';
+var argv = require('yargs').argv;
+process.env.NODE_ENV = argv.NODE_ENV === 'production'? 'production' : 'dev';
 
 var express = require('express');
 var path = require('path');

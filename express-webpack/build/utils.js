@@ -12,13 +12,12 @@ exports.assetsPath = function(_path) {
 exports.styleLoaders = function(options){
     var sourceMap = options.sourceMap ? '?sourceMap=true' : '';
 
-    console.log(sourceMap);
     var extract = options.extract;
     var loaders = ['css-loader', 'postcss-loader', 'less-loader']
     var ret = {
         test: /\.less$/,
     }
-
+    
     if( !extract ){
         loaders.unshift('style-loader');
     }
@@ -35,7 +34,6 @@ exports.styleLoaders = function(options){
     }else{
         ret.use = loaders;
     };
-    console.log(ret);
     return [ret];
 };
 
