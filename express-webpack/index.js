@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'dev';
 
 var express = require('express');
 var path = require('path');
@@ -15,8 +15,15 @@ app.set('view options', {
     extname: '.art'
 });
 
-// serve pure static assets
-var staticPath = path.posix.join(config.build.assetsPublicPath, config.build.assetsSubDirectory);
+// 环境变量
+var env = process.env.NODE_ENV === 'production' ? 'build' : 'dev';
+
+// 配置 DEV webpack
+if( env === 'dev' ){
+    require('./app/webpack-middleware')(app);
+}
+
+var staticPath = path.posix.join(config[env].assetsPublicPath, config[env].assetsSubDirectory);
 app.use(staticPath, express.static('./static/dist'));
 
 app.use(require('./app/mix')(staticPath));
