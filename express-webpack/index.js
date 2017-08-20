@@ -22,8 +22,8 @@ app.use(staticPath, express.static('./static/dist'));
 app.use(require('./app/mix')(staticPath));
 
 app.get('/', function (req, res){
-    var assets = res.mix().chunk('index').string();
-    res.render('index', {chunk: assets});
+    var mix = res.mix;
+    res.render('index', {mix: mix});
 });
 
 app.listen(3000);

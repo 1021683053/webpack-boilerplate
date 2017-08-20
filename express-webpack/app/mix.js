@@ -9,55 +9,27 @@ module.exports = function(static){
         }else{
             stats = res.locals.webpackStats.toJson();
         }
-
-        console.log(stats);
-
-        res.mix = function(){
-            var ret = {};
-
-            var chunkAll = stats.assetsByChunkName;
-            ret.publicPath = static||stats.publicPath;
-            ret.style = [];
-            ret.script = [];
-
-            chunk = indexAssets(chunkAll, 'manifest');
-            if( chunk ){
-                ret.style = ret.style.concat(chunk.styles);
-                ret.script = ret.script.concat(chunk.scripts);
-            }
-
-            var chunk = indexAssets(chunkAll, 'vendor');
-            if( chunk ){
-                ret.style = ret.style.concat(chunk.styles);
-                ret.script = ret.script.concat(chunk.scripts);
-            }
-
-
-            ret.string = function(){
-                var style = this.style.map(function(uri){
-                    return '<link rel="stylesheet" href="'+ret.publicPath+uri+'" />';
-                });
-                var script = this.script.map(function(uri){
-                    return '<script src="'+ret.publicPath+uri+'"></script>';
-                });
-                this.style = style;
-                this.script = script;
+        res.mix = {
+            static: static||stats.publicPath,
+            styles: [],
+            scripts: [],
+            chunks: function(index){
+                var chunks = indexAssets(stats.entrypoints, index);
+                this.styles = chunks.styles;
+                this.scripts = chunks.scripts;
                 return this;
-            };
-
-            ret.chunk = function (index) {
-                if( index ){
-                    chunk = indexAssets(chunkAll, index);
-                    console.log(chunk);
-                    if( chunk ) {
-                        this.style = this.style.concat(chunk.styles);
-                        this.script = this.script.concat(chunk.scripts);
-                    }
-                }
-                return this;
-            };
-            console.log(ret);
-            return ret;
+            },
+            string: function(type){
+                var chunks = [];
+                if( type == 'style' ){
+                    chunks = this.styles;
+                }else if( type == 'script' ){
+                    chunks = this.scripts;
+                }else{
+                    return '';
+                };
+                return buildHTML(this.static, chunks, type);
+            }
         };
         next();
     };
@@ -69,10 +41,10 @@ function normalizeAssets(assets) {
 
 function indexAssets(assetsAll, index){
     if( !assetsAll[index] ){
-        return false;
+        return {scripts:[], scripts: []};
     };
-    let assets = normalizeAssets(assetsAll[index]);
-    let chunks ={};
+    var assets = normalizeAssets(assetsAll[index].assets);
+    var chunks ={};
     chunks.scripts = assets.filter(path=>{
         return path.endsWith('.js')
     });
@@ -81,4 +53,21 @@ function indexAssets(assetsAll, index){
     });
     return chunks;
 };
+
+function buildHTML(static, chunks, type){
+    if( !chunks || chunks.length<=0 ){
+        return '';
+    }
+    let ret = '';
+    chunks.forEach(function(chunk){
+        if( type == 'script' ){
+            ret+='<script src="'+ static + chunk +'" charset="utf-8"></script>';
+            ret+='\n\t';
+        }else if( type == 'style' ){
+            ret+='<link rel="stylesheet" type="text/css" href="'+ static + chunk +'"/>';
+            ret+='\n\t';
+        }
+    })
+    return ret;
+}
 

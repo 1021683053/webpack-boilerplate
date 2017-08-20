@@ -3,18 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Webpack Express Dev</title>
-    {{if chunk.style && chunk.style.length>0}}
-        {{each chunk.style}}
-    {{@ $value}}
-        {{/each}}
-    {{/if}}
+    {{@ mix.chunks('index').string('style')}}
 </head>
 <body>
     <h2>Webpack Express Dev!</h2>
-    {{if chunk.script && chunk.script.length>0}}
-        {{each chunk.script}}
-    {{@ $value}}
-        {{/each}}
-    {{/if}}
+    {{@ mix.chunks('index').string('script')}}
 </body>
 </html>

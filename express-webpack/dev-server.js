@@ -50,7 +50,6 @@ app.use(require('./app/mix')(staticPath));
 
 app.get('/', function (req, res){
     var assets = res.mix().chunk('index').string();
-    console.log(assets);
     res.render('index', {chunk: assets});
 });
 
